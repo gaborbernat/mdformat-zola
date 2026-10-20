@@ -8,6 +8,7 @@ requires = [
 
 [project]
 name = "mdformat-zola"
+import-names = [ "mdformat_zola" ]
 description = "Mdformat plugin for Zola-flavored Markdown"
 keywords = [
   "formatter",
@@ -15,7 +16,8 @@ keywords = [
   "mdformat",
   "zola",
 ]
-license.file = "LICENSE"
+license = "MIT"
+license-files = [ "LICENSE" ]
 maintainers = [
   { name = "Bernát Gábor", email = "gaborjbernat@gmail.com" },
 ]
@@ -23,7 +25,6 @@ requires-python = ">=3.11"
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
@@ -54,10 +55,11 @@ dependencies = [
   "mdformat-web>=0.2",
   "mdit-py-plugins>=0.6.1",
 ]
-urls.Documentation = "https://github.com/gaborbernat/mdformat-zola"
-urls.Homepage = "https://github.com/gaborbernat/mdformat-zola"
-urls.Source = "https://github.com/gaborbernat/mdformat-zola"
-urls.Tracker = "https://github.com/gaborbernat/mdformat-zola/issues"
+urls.Changelog = "https://github.com/tox-dev/mdformat-zola/blob/main/CHANGELOG.md"
+urls.Documentation = "https://github.com/tox-dev/mdformat-zola"
+urls.Homepage = "https://github.com/tox-dev/mdformat-zola"
+urls.Source = "https://github.com/tox-dev/mdformat-zola"
+urls.Tracker = "https://github.com/tox-dev/mdformat-zola/issues"
 entry-points."mdformat.parser_extension".zola = "mdformat_zola"
 
 [dependency-groups]

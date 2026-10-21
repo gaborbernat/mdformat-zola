@@ -2,7 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/mdformat-zola?style=flat-square)](https://pypi.org/project/mdformat-zola/)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/mdformat-zola.svg)](https://pypi.org/project/mdformat-zola/)
-[![check](https://github.com/gaborbernat/mdformat-zola/actions/workflows/check.yaml/badge.svg)](https://github.com/gaborbernat/mdformat-zola/actions/workflows/check.yaml)
+[![check](https://github.com/tox-dev/mdformat-zola/actions/workflows/check.yaml/badge.svg)](https://github.com/tox-dev/mdformat-zola/actions/workflows/check.yaml)
 
 Mdformat plugin for [Zola](https://www.getzola.org)-flavored Markdown. It formats Zola content files while keeping
 shortcodes, heading anchors, and code-block annotations intact.

@@ -16,5 +16,5 @@
 
 ### Added
 
-- Added a Zola-flavored Markdown formatter ([#2](https://github.com/tox-dev/mdformat-zola/pull/2)) by
+- Format Zola-flavored Markdown ([#2](https://github.com/tox-dev/mdformat-zola/pull/2)) by
   [@gaborbernat](https://github.com/gaborbernat).

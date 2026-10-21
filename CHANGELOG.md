@@ -2,14 +2,13 @@
 
 <!-- towncrier release notes start -->
 
-## 1.0.1 (2026-10-18)
+<a name="release-1-0-1"></a>
 
 <a name="release-1-0-1-documentation"></a>
 
-### Documentation
+## 1.0.1 (2026-10-18)
 
-- Document the 1.0.0 release and require changelog entries for pull requests
-  ([#36](https://github.com/tox-dev/mdformat-zola/pull/36)) by [@gaborbernat](https://github.com/gaborbernat).
+<a name="release-1-0-0"></a>
 
 ## 1.0.0 (2026-07-03)
 

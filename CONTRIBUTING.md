@@ -20,10 +20,10 @@ Run the tests across the supported Python versions:
 tox -e 3.15,3.14,3.13,3.12,3.11
 ```
 
-Format and lint through the configured hooks:
+Format and lint through the configured tox task:
 
 ```bash
-prek run --all-files
+tox -e fix
 ```
 
 Type check (ty):
@@ -89,7 +89,7 @@ handles in one `by` phrase in the fragment. Omit bots and reviewers.
 1. Branch from `main`.
 1. Make the change with tests.
 1. Add a changelog fragment for a user-facing change, or apply `skip news` for internal maintenance.
-1. Run `prek run --all-files`, `tox -e type`, and the test environments.
+1. Run `tox -e fix`, `tox -e type`, and the test environments.
 1. Commit following the Commitizen convention and open a pull request.
 
 ## Make a release

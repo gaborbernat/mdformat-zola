@@ -4,8 +4,6 @@
 
 <a name="release-1-0-1"></a>
 
-<a name="release-1-0-1-documentation"></a>
-
 ## 1.0.1 (2026-10-18)
 
 <a name="release-1-0-0"></a>

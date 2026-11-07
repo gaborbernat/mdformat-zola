@@ -14,12 +14,15 @@ if TYPE_CHECKING:
 from ._mdit_plugins.shortcodes import shortcode_plugin
 from ._renderer import postprocess_heading, render_fence, render_verbatim, render_zola_shortcode_block
 
+#: Formatting rewrites the syntax tree, so mdformat skips its check that the output parses to the same tree.
 CHANGES_AST: Final[bool] = True
+#: Renderers for the token types this plugin adds or overrides, keyed by token type.
 RENDERERS: Final[Mapping[str, Render]] = {
     "zola_shortcode": render_verbatim,
     "zola_shortcode_block": render_zola_shortcode_block,
     "fence": render_fence,
 }
+#: Postprocessors that adjust the rendered text of a token type, keyed by token type.
 POSTPROCESSORS: Final[Mapping[str, Postprocess]] = {
     "heading": postprocess_heading,
 }

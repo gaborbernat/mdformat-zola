@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from conftest import Formatter
 
 
 @pytest.mark.parametrize(
@@ -23,11 +23,11 @@ if TYPE_CHECKING:
         pytest.param('a {{ ref(page="x") }} b\n', 'a {{ ref(page="x") }} b\n', id="in_paragraph"),
     ],
 )
-def test_inline_shortcode(fmt: Callable[..., str], text: str, expected: str) -> None:
+def test_inline_shortcode(fmt: Formatter, text: str, expected: str) -> None:
     assert fmt(text) == expected
 
 
-def test_inline_shortcode_not_wrapped(fmt: Callable[..., str]) -> None:
+def test_inline_shortcode_not_wrapped(fmt: Formatter) -> None:
     start = (
         'Prefix {{ screen(name="project", alt="A very long alt text that certainly goes well beyond '
         'the one hundred and twenty character wrap boundary for sure") }} suffix\n'
@@ -39,7 +39,7 @@ def test_inline_shortcode_not_wrapped(fmt: Callable[..., str]) -> None:
     )
 
 
-def test_inline_shortcode_escaping_not_applied(fmt: Callable[..., str]) -> None:
+def test_inline_shortcode_escaping_not_applied(fmt: Formatter) -> None:
     assert fmt("x {{/* note() */}} y\n") == "x {{/* note() */}} y\n"
 
 
@@ -51,24 +51,24 @@ def test_inline_shortcode_escaping_not_applied(fmt: Callable[..., str]) -> None:
         pytest.param("text {{ and }} more\n", id="bare_double_braces"),
     ],
 )
-def test_inline_shortcode_invalid_left_untouched(fmt: Callable[..., str], text: str) -> None:
+def test_inline_shortcode_invalid_left_untouched(fmt: Formatter, text: str) -> None:
     assert fmt(text) == text
 
 
-def test_inline_shortcode_unterminated_is_text(fmt: Callable[..., str]) -> None:
+def test_inline_shortcode_unterminated_is_text(fmt: Formatter) -> None:
     assert fmt("a {{ foo(x=1)\n") == "a {{ foo(x=1)\n"
 
 
-def test_inline_shortcode_unterminated_string_is_text(fmt: Callable[..., str]) -> None:
+def test_inline_shortcode_unterminated_string_is_text(fmt: Formatter) -> None:
     assert fmt('{{ foo(a="x) }}\n') == '{{ foo(a="x) }}\n'
 
 
-def test_inline_shortcode_in_link_label(fmt: Callable[..., str]) -> None:
+def test_inline_shortcode_in_link_label(fmt: Formatter) -> None:
     start = '[{{ icon(name="x") }}](@/page.md)\n'
     assert fmt(start) == start
 
 
-def test_inline_shortcode_in_list(fmt: Callable[..., str]) -> None:
+def test_inline_shortcode_in_list(fmt: Formatter) -> None:
     start = """\
         - Item 1 {{ ref(page="1") }}
         - Item 2 {{ ref(page="2") }}

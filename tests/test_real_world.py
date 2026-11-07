@@ -6,19 +6,19 @@ from typing import TYPE_CHECKING, Final
 import pytest
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from conftest import Formatter
 
 _FIXTURES: Final[list[Path]] = sorted((Path(__file__).parent / "fixtures").glob("*.md"))
 
 
-@pytest.mark.parametrize("fixture", _FIXTURES, ids=lambda p: p.stem)
-def test_fixture_is_stable(fmt: Callable[..., str], fixture: Path) -> None:
+@pytest.mark.parametrize("fixture", _FIXTURES, ids=lambda path: path.stem)
+def test_fixture_is_stable(fmt: Formatter, fixture: Path) -> None:
     formatted = fmt(fixture.read_text(encoding="utf-8"))
     assert fmt(formatted) == formatted
 
 
-@pytest.mark.parametrize("fixture", _FIXTURES, ids=lambda p: p.stem)
-def test_fixture_preserves_shortcodes_and_bodies(fmt: Callable[..., str], fixture: Path) -> None:
+@pytest.mark.parametrize("fixture", _FIXTURES, ids=lambda path: path.stem)
+def test_fixture_preserves_shortcodes_and_bodies(fmt: Formatter, fixture: Path) -> None:
     out = fmt(fixture.read_text(encoding="utf-8"))
     assert "{% mermaid() %}" in out
     assert '  A["node[0]"] --> B[*]' in out  # block body kept byte-for-byte, no escaping

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from conftest import Formatter
 
 
 @pytest.mark.parametrize(
@@ -22,16 +22,16 @@ if TYPE_CHECKING:
         pytest.param("# Title {  #id   .a  }\n", "# Title {#id .a}\n", id="attr_whitespace"),
     ],
 )
-def test_heading_attrs_normalized(fmt: Callable[..., str], text: str, expected: str) -> None:
+def test_heading_attrs_normalized(fmt: Formatter, text: str, expected: str) -> None:
     assert fmt(text) == expected
 
 
-def test_heading_with_inline_shortcode_and_attrs(fmt: Callable[..., str]) -> None:
+def test_heading_with_inline_shortcode_and_attrs(fmt: Formatter) -> None:
     start = '# Heading with {{ icon(name="x") }} {#id .c}\n'
     assert fmt(start) == start
 
 
-def test_heading_with_only_inline_shortcode_untouched(fmt: Callable[..., str]) -> None:
+def test_heading_with_only_inline_shortcode_untouched(fmt: Formatter) -> None:
     start = '# Heading with {{ icon(name="x") }}\n'
     assert fmt(start) == start
 
@@ -44,5 +44,5 @@ def test_heading_with_only_inline_shortcode_untouched(fmt: Callable[..., str]) -
         pytest.param("# Empty {}\n", id="empty_attr_block"),
     ],
 )
-def test_heading_left_untouched(fmt: Callable[..., str], text: str) -> None:
+def test_heading_left_untouched(fmt: Formatter, text: str) -> None:
     assert fmt(text) == text

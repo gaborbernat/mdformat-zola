@@ -6,12 +6,11 @@ from typing import TYPE_CHECKING
 import mdformat.plugins
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
-
+    from conftest import Formatter
     from pytest_mock import MockerFixture
 
 
-def test_fence_plain_language_untouched(fmt: Callable[..., str]) -> None:
+def test_fence_plain_language_untouched(fmt: Formatter) -> None:
     start = """\
         ```python
         x = 1
@@ -20,7 +19,7 @@ def test_fence_plain_language_untouched(fmt: Callable[..., str]) -> None:
     assert fmt(dedent(start)) == dedent(start)
 
 
-def test_fence_annotations_reordered(fmt: Callable[..., str]) -> None:
+def test_fence_annotations_reordered(fmt: Formatter) -> None:
     start = """\
         ```rust, hl_lines=3-4  8-9,linenos , linenostart=10
         let x = 1;
@@ -34,7 +33,7 @@ def test_fence_annotations_reordered(fmt: Callable[..., str]) -> None:
     assert fmt(dedent(start)) == dedent(expected)
 
 
-def test_fence_unknown_annotation_preserved(fmt: Callable[..., str]) -> None:
+def test_fence_unknown_annotation_preserved(fmt: Formatter) -> None:
     start = """\
         ```rust,custom=1,linenos
         let x = 1;
@@ -48,7 +47,7 @@ def test_fence_unknown_annotation_preserved(fmt: Callable[..., str]) -> None:
     assert fmt(dedent(start)) == dedent(expected)
 
 
-def test_fence_backticks_in_code_grow_fence(fmt: Callable[..., str]) -> None:
+def test_fence_backticks_in_code_grow_fence(fmt: Formatter) -> None:
     start = """\
         ```rust,linenos
         ```nested```
@@ -62,11 +61,11 @@ def test_fence_backticks_in_code_grow_fence(fmt: Callable[..., str]) -> None:
     assert fmt(dedent(start)) == dedent(expected)
 
 
-def test_fence_backtick_in_info_uses_tilde(fmt: Callable[..., str]) -> None:
+def test_fence_backtick_in_info_uses_tilde(fmt: Formatter) -> None:
     assert fmt("~~~py`x\ncode\n~~~\n") == "~~~py`x\ncode\n~~~\n"
 
 
-def test_fence_codeformatter_runs_with_zola_annotations(fmt: Callable[..., str]) -> None:
+def test_fence_codeformatter_runs_with_zola_annotations(fmt: Formatter) -> None:
     start = """\
         ```python,linenos
         x=  1
@@ -80,7 +79,7 @@ def test_fence_codeformatter_runs_with_zola_annotations(fmt: Callable[..., str])
     assert fmt(dedent(start), codeformatters=["python"]) == dedent(expected)
 
 
-def test_fence_codeformatter_output_gets_trailing_newline(fmt: Callable[..., str], mocker: MockerFixture) -> None:
+def test_fence_codeformatter_output_gets_trailing_newline(fmt: Formatter, mocker: MockerFixture) -> None:
     mocker.patch.dict(mdformat.plugins.CODEFORMATTERS, {"python": lambda _code, _info: "formatted"})
     start = """\
         ```python
@@ -95,7 +94,7 @@ def test_fence_codeformatter_output_gets_trailing_newline(fmt: Callable[..., str
     assert fmt(dedent(start), codeformatters=["python"]) == dedent(expected)
 
 
-def test_fence_codeformatter_error_keeps_source(fmt: Callable[..., str], mocker: MockerFixture) -> None:
+def test_fence_codeformatter_error_keeps_source(fmt: Formatter, mocker: MockerFixture) -> None:
     def boom(_code: str, _info: str) -> str:
         raise ValueError
 

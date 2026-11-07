@@ -49,8 +49,7 @@ def test_config_string_replaces_default_set(fmt: Callable[..., str]) -> None:
 
 
 def test_config_list_form(fmt: Callable[..., str]) -> None:
-    start = f"{{% aside() %}}\n{_LONG}\n{{% end %}}\n"
-    out = fmt(start, plugin={"markdown_shortcodes": ["aside"]})
+    out = fmt(f"{{% aside() %}}\n{_LONG}\n{{% end %}}\n", plugin={"markdown_shortcodes": ["aside"]})
     assert out.splitlines()[0] == "{% aside() %}"
     assert len(out.splitlines()) > 3
 

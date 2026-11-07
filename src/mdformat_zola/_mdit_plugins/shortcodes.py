@@ -13,7 +13,7 @@ intact.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Final, Literal, NamedTuple
+from typing import TYPE_CHECKING, Literal, NamedTuple
 
 from mdformat_zola._syntax import format_shortcode
 
@@ -22,27 +22,16 @@ if TYPE_CHECKING:
     from markdown_it.rules_block import StateBlock
     from markdown_it.rules_inline import StateInline
 
-_INLINE_DELIMITERS: Final = (("{{/*", "*/}}", True), ("{{", "}}", False))
-_BLOCK_DELIMITERS: Final = (("{%/*", "*/%}", True), ("{%", "%}", False))
-
-
-class _Marker(NamedTuple):
-    """A block-shortcode boundary line: a ``start`` carrying its canonical call, or an ``end``."""
-
-    kind: Literal["start", "end"]
-    inner: str
-    escaped: bool
-
 
 def shortcode_plugin(md: MarkdownIt) -> None:
-    """Register the inline and block shortcode rules."""
+    # Register the inline and block shortcode rules.
     md.inline.ruler.before("text", "zola_shortcode", _inline_rule)
     md.block.ruler.before("fence", "zola_shortcode_block", _block_rule, {"alt": ["paragraph", "blockquote", "list"]})
 
 
 def _inline_rule(state: StateInline, silent: bool) -> bool:  # ruff:ignore[boolean-type-hint-positional-argument] - markdown-it-py rule signature
     src, pos = state.src, state.pos
-    for open_delim, close_delim, escaped in _INLINE_DELIMITERS:
+    for open_delim, close_delim, escaped in (("{{/*", "*/}}", True), ("{{", "}}", False)):
         if not src.startswith(open_delim, pos):
             continue
         inner_start = pos + len(open_delim)
@@ -53,11 +42,29 @@ def _inline_rule(state: StateInline, silent: bool) -> bool:  # ruff:ignore[boole
         if formatted is None:
             return False
         if not silent:
-            token = state.push("zola_shortcode", "", 0)
-            token.content = _wrap_inline(formatted, escaped=escaped)
+            state.push("zola_shortcode", "", 0).content = _wrap_inline(formatted, escaped=escaped)
         state.pos = close_pos + len(close_delim)
         return True
     return False
+
+
+def _scan_close(src: str, start: int, close: str) -> int:
+    pos = start
+    while pos < len(src):
+        if (char := src[pos]) in "\"'`":
+            nxt = src.find(char, pos + 1)
+            if nxt == -1:
+                return -1
+            pos = nxt + 1
+        elif src.startswith(close, pos):
+            return pos
+        else:
+            pos += 1
+    return -1
+
+
+def _wrap_inline(inner: str, *, escaped: bool) -> str:
+    return f"{{{{/* {inner} */}}}}" if escaped else f"{{{{ {inner} }}}}"
 
 
 def _block_rule(state: StateBlock, start_line: int, end_line: int, silent: bool) -> bool:  # ruff:ignore[boolean-type-hint-positional-argument] - markdown-it-py rule signature
@@ -105,12 +112,12 @@ def _open_delimiter(text: str) -> tuple[bool, str] | None:
     return None
 
 
-def _joined(state: StateBlock, first: int, last: int) -> str:
-    return " ".join(_line(state, line) for line in range(first, last + 1))
+def _line(state: StateBlock, line: int) -> str:
+    return state.src[state.bMarks[line] + state.tShift[line] : state.eMarks[line]].strip()
 
 
 def _classify(text: str) -> _Marker | None:
-    for open_delim, close_delim, escaped in _BLOCK_DELIMITERS:
+    for open_delim, close_delim, escaped in (("{%/*", "*/%}", True), ("{%", "%}", False)):
         if not (text.startswith(open_delim) and text.endswith(close_delim)):
             continue
         if len(text) < len(open_delim) + len(close_delim):
@@ -124,28 +131,15 @@ def _classify(text: str) -> _Marker | None:
     return None
 
 
-def _scan_close(src: str, start: int, close: str) -> int:
-    pos = start
-    while pos < len(src):
-        char = src[pos]
-        if char in "\"'`":
-            nxt = src.find(char, pos + 1)
-            if nxt == -1:
-                return -1
-            pos = nxt + 1
-        elif src.startswith(close, pos):
-            return pos
-        else:
-            pos += 1
-    return -1
+class _Marker(NamedTuple):
+    # A block-shortcode boundary line: a ``start`` carrying its canonical call, or an ``end``.
+    kind: Literal["start", "end"]
+    inner: str
+    escaped: bool
 
 
-def _line(state: StateBlock, line: int) -> str:
-    return state.src[state.bMarks[line] + state.tShift[line] : state.eMarks[line]].strip()
-
-
-def _wrap_inline(inner: str, *, escaped: bool) -> str:
-    return f"{{{{/* {inner} */}}}}" if escaped else f"{{{{ {inner} }}}}"
+def _joined(state: StateBlock, first: int, last: int) -> str:
+    return " ".join(_line(state, line) for line in range(first, last + 1))
 
 
 __all__ = [

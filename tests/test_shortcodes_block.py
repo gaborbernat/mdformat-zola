@@ -21,10 +21,10 @@ def test_block_body_preserved_verbatim(fmt: Callable[..., str]) -> None:
 
 
 def test_block_start_args_sorted_body_kept(fmt: Callable[..., str]) -> None:
-    long_body = "body *keeps* [markdown](y) then " + "more words that push well past column one twenty " * 3
+    long_body = f"body *keeps* [markdown](y) then {'more words that push well past column one twenty ' * 3}"
     assert len(long_body) > 120
-    start = '{% demo(cls="x", author="Bob") %}\n' + long_body + "\n{% end %}\n"
-    expected = '{% demo(author="Bob", cls="x") %}\n' + long_body + "\n{% end %}\n"
+    start = f'{{% demo(cls="x", author="Bob") %}}\n{long_body}\n{{% end %}}\n'
+    expected = f'{{% demo(author="Bob", cls="x") %}}\n{long_body}\n{{% end %}}\n'
     assert fmt(start) == expected
 
 

@@ -9,14 +9,14 @@ from typing import TYPE_CHECKING, Final, cast
 import mdformat
 import mdformat.plugins
 
-from mdformat_zola._syntax import format_attrs, format_fence_info
+from ._syntax import format_attrs, format_fence_info
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from mdformat.renderer import RenderContext, RenderTreeNode
 
-LOGGER: Final = logging.getLogger(__name__)
+_LOGGER: Final = logging.getLogger(__name__)
 _HEADING_ATTRS: Final = re.compile(r"^(?P<text>.*?)[ \t]*\{(?P<attrs>[^{}]*)\}[ \t]*$")
 
 # Shortcodes whose body is Markdown that Zola re-renders (as opposed to raw text like a Mermaid diagram). Their bodies
@@ -36,12 +36,12 @@ _DEFAULT_MARKDOWN_SHORTCODES: Final = frozenset({
 
 
 def render_verbatim(node: RenderTreeNode, _context: RenderContext) -> str:
-    """Render an inline shortcode token exactly as captured, without escaping or wrapping."""
+    # Render an inline shortcode token exactly as captured, without escaping or wrapping.
     return node.content
 
 
 def render_zola_shortcode_block(node: RenderTreeNode, context: RenderContext) -> str:
-    """Render a body shortcode, formatting the body as Markdown for known prose shortcodes."""
+    # Render a body shortcode, formatting the body as Markdown for known prose shortcodes.
     inner, escaped, body = node.info, node.meta["escaped"], node.content
     name = inner.split("(", 1)[0]
     if body and not escaped and name in _markdown_shortcodes(context):
@@ -75,7 +75,7 @@ def _format_markdown_body(body: str, context: RenderContext) -> str:
 
 
 def render_fence(node: RenderTreeNode, context: RenderContext) -> str:
-    """Render a code fence, normalizing Zola annotations and running any code formatter."""
+    # Render a code fence, normalizing Zola annotations and running any code formatter.
     info = format_fence_info(node.info)
     lang = info.split(",", 1)[0]
     code_block = node.content
@@ -86,7 +86,7 @@ def render_fence(node: RenderTreeNode, context: RenderContext) -> str:
         try:
             code_block = fmt_func(code_block, info)
         except Exception:  # ruff:ignore[blind-except] - a formatter error must never crash mdformat
-            LOGGER.warning("Failed formatting content of a %s code block", lang)
+            _LOGGER.warning("Failed formatting content of a %s code block", lang)
         else:
             if code_block and not code_block.endswith("\n"):
                 code_block += "\n"
@@ -104,7 +104,7 @@ def _longest_consecutive_sequence(text: str, char: str) -> int:
 
 
 def postprocess_heading(text: str, _node: RenderTreeNode, _context: RenderContext) -> str:
-    """Normalize a trailing ``{#id .class}`` attribute block on a rendered heading."""
+    # Normalize a trailing ``{#id .class}`` attribute block on a rendered heading.
     match = _HEADING_ATTRS.match(text)
     if match is None:
         return text

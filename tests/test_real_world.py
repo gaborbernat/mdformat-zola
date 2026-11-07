@@ -1,10 +1,3 @@
-"""Validate whole Zola documents end to end.
-
-The fixtures mirror patterns seen in real Zola sites (the getzola/zola docs, and `{% mermaid() %}` posts from projects
-such as owasp-noir/noir and not-matthias/apollo): frontmatter, heading anchors, inline and block shortcodes, escaped
-shortcodes, code-block annotations, internal links, and the GFM constructs Zola enables.
-"""
-
 from __future__ import annotations
 
 from pathlib import Path

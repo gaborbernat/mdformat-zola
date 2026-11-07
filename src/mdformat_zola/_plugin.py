@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 from ._mdit_plugins.shortcodes import shortcode_plugin
 from ._renderer import postprocess_heading, render_fence, render_verbatim, render_zola_shortcode_block
 
-CHANGES_AST: Final = True
+CHANGES_AST: Final[bool] = True
 RENDERERS: Final[Mapping[str, Render]] = {
     "zola_shortcode": render_verbatim,
     "zola_shortcode_block": render_zola_shortcode_block,

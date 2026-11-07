@@ -1,9 +1,3 @@
-"""Full Zola feature matrix with multiple examples per construct.
-
-Formats through every bundled extension, matching how the `mdformat` CLI runs on a real Zola site, so the Zola-specific
-rules are exercised alongside GFM, footnotes, definition lists, alerts, and TOML frontmatter.
-"""
-
 from __future__ import annotations
 
 from textwrap import dedent

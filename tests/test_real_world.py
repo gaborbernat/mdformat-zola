@@ -8,7 +8,7 @@ import pytest
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-_FIXTURES: Final = sorted((Path(__file__).parent / "fixtures").glob("*.md"))
+_FIXTURES: Final[list[Path]] = sorted((Path(__file__).parent / "fixtures").glob("*.md"))
 
 
 @pytest.mark.parametrize("fixture", _FIXTURES, ids=lambda p: p.stem)

@@ -17,11 +17,11 @@ import re
 import string
 from typing import Final
 
-_IDENT: Final = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
-_NUMBER: Final = re.compile(r"-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?")
-_IDENT_CHARS: Final = frozenset(f"{string.ascii_letters}{string.digits}_")
+_IDENT: Final[re.Pattern[str]] = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
+_NUMBER: Final[re.Pattern[str]] = re.compile(r"-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?")
+_IDENT_CHARS: Final[frozenset[str]] = frozenset(f"{string.ascii_letters}{string.digits}_")
 _QUOTES: Final[str] = "\"'`"
-_ATTR_TOKEN: Final = re.compile(
+_ATTR_TOKEN: Final[re.Pattern[str]] = re.compile(
     r"[ \t]*(?:"
     r"\.(?P<cls>[^\s.#={}]+)"
     r"|#(?P<id>[^\s.#={}]+)"

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable, Mapping, Sequence
 
 # Every installed extension, matching how the mdformat CLI runs on a real Zola site.
-_EXTENSIONS: Final = sorted(mdformat.plugins.PARSER_EXTENSIONS)
+_EXTENSIONS: Final[list[str]] = sorted(mdformat.plugins.PARSER_EXTENSIONS)
 
 
 @pytest.fixture

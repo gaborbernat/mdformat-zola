@@ -16,12 +16,12 @@ if TYPE_CHECKING:
 
     from mdformat.renderer import RenderContext, RenderTreeNode
 
-_LOGGER: Final = logging.getLogger(__name__)
-_HEADING_ATTRS: Final = re.compile(r"^(?P<text>.*?)[ \t]*\{(?P<attrs>[^{}]*)\}[ \t]*$")
+_LOGGER: Final[logging.Logger] = logging.getLogger(__name__)
+_HEADING_ATTRS: Final[re.Pattern[str]] = re.compile(r"^(?P<text>.*?)[ \t]*\{(?P<attrs>[^{}]*)\}[ \t]*$")
 
 # Shortcodes whose body is Markdown that Zola re-renders (as opposed to raw text like a Mermaid diagram). Their bodies
 # are formatted recursively by default; a Zola site can override the set via the `markdown_shortcodes` plugin option.
-_DEFAULT_MARKDOWN_SHORTCODES: Final = frozenset({
+_DEFAULT_MARKDOWN_SHORTCODES: Final[frozenset[str]] = frozenset({
     "admonition",
     "aside",
     "callout",

@@ -11,7 +11,7 @@ from mdformat_zola import add_cli_argument_group
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-_LONG: Final = " ".join(["word"] * 40)
+_LONG: Final[str] = " ".join(["word"] * 40)
 
 
 def test_markdown_body_formatted_by_default(fmt: Callable[..., str]) -> None:

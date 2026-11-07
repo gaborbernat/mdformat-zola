@@ -76,7 +76,7 @@ def _block_rule(state: StateBlock, start_line: int, end_line: int, silent: bool)
         tag_end += 1
         if tag_end >= end_line:
             return False
-    start = _classify(_joined(state, start_line, tag_end))
+    start = _classify(" ".join(_line(state, line) for line in range(start_line, tag_end + 1)))
     if start is None or start.kind != "start" or start.escaped != escaped:
         return False
     depth = 1
@@ -136,10 +136,6 @@ class _Marker(NamedTuple):
     kind: Literal["start", "end"]
     inner: str
     escaped: bool
-
-
-def _joined(state: StateBlock, first: int, last: int) -> str:
-    return " ".join(_line(state, line) for line in range(first, last + 1))
 
 
 __all__ = [

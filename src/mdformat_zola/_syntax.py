@@ -110,12 +110,9 @@ def _parse_string(source: str, pos: int) -> tuple[str, int]:
     end = source.find(source[pos], pos + 1)
     if end == -1:
         raise _ParseError
-    return _format_string(source[pos + 1 : end]), end + 1
-
-
-def _format_string(value: str) -> str:
+    value = source[pos + 1 : end]
     delimiter = next(quote for quote in _QUOTES if quote not in value)
-    return f"{delimiter}{value}{delimiter}"
+    return f"{delimiter}{value}{delimiter}", end + 1
 
 
 def _parse_array(source: str, pos: int) -> tuple[str, int]:

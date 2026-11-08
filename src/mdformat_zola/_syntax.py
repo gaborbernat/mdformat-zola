@@ -18,15 +18,25 @@ import string
 from typing import Final
 
 _IDENT: Final[re.Pattern[str]] = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
-_NUMBER: Final[re.Pattern[str]] = re.compile(r"-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?")
+_NUMBER: Final[re.Pattern[str]] = re.compile(
+    r"""
+    -?                # optional sign
+    (?:0|[1-9][0-9]*) # integer part without leading zeros
+    (?:\.[0-9]+)?     # optional fraction
+    """,
+    re.VERBOSE,
+)
 _IDENT_CHARS: Final[frozenset[str]] = frozenset(f"{string.ascii_letters}{string.digits}_")
 _QUOTES: Final[str] = "\"'`"
 _ATTR_TOKEN: Final[re.Pattern[str]] = re.compile(
-    r"[ \t]*(?:"
-    r"\.(?P<cls>[^\s.#={}]+)"
-    r"|#(?P<id>[^\s.#={}]+)"
-    r"|(?P<key>[A-Za-z_][A-Za-z0-9_-]*)=(?P<val>\"[^\"]*\"|'[^']*'|[^\s{}]+)"
-    r")[ \t]*"
+    r"""
+    [ \t]*(?:
+    \.(?P<cls>[^\s.\#={}]+)                                           # class
+    |\#(?P<id>[^\s.\#={}]+)                                           # id
+    |(?P<key>[A-Za-z_][A-Za-z0-9_-]*)=(?P<val>"[^"]*"|'[^']*'|[^\s{}]+) # key=value
+    )[ \t]*
+    """,
+    re.VERBOSE,
 )
 
 

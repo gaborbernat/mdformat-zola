@@ -17,7 +17,14 @@ if TYPE_CHECKING:
     from mdformat.renderer import RenderContext, RenderTreeNode
 
 _LOGGER: Final[logging.Logger] = logging.getLogger(__name__)
-_HEADING_ATTRS: Final[re.Pattern[str]] = re.compile(r"^(?P<text>.*?)[ \t]*\{(?P<attrs>[^{}]*)\}[ \t]*$")
+_HEADING_ATTRS: Final[re.Pattern[str]] = re.compile(
+    r"""
+    ^(?P<text>.*?)                # heading text, lazy so the attribute block splits off
+    [ \t]*\{(?P<attrs>[^{}]*)\}   # the {...} attribute block
+    [ \t]*$
+    """,
+    re.VERBOSE,
+)
 
 # Shortcodes whose body is Markdown that Zola re-renders (as opposed to raw text like a Mermaid diagram). Their bodies
 # are formatted recursively by default; a Zola site can override the set via the `markdown_shortcodes` plugin option.

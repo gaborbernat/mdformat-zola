@@ -4,10 +4,10 @@ from textwrap import dedent
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from conftest import Formatter
 
 
-def test_zola_document_with_all_features(fmt: Callable[..., str]) -> None:
+def test_zola_document_with_all_features(fmt: Formatter) -> None:
     start = """\
         +++
         title = "Post"
@@ -61,7 +61,7 @@ def test_zola_document_with_all_features(fmt: Callable[..., str]) -> None:
     assert fmt(dedent(start)) == dedent(expected)
 
 
-def test_document_is_idempotent(fmt: Callable[..., str]) -> None:
+def test_document_is_idempotent(fmt: Formatter) -> None:
     start = """\
         # Heading {.b .a}
 

@@ -6,10 +6,10 @@ from typing import TYPE_CHECKING
 import pytest
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from conftest import Formatter
 
 
-def test_block_body_preserved_verbatim(fmt: Callable[..., str]) -> None:
+def test_block_body_preserved_verbatim(fmt: Formatter) -> None:
     start = """\
         {% mermaid() %}
         graph TD
@@ -20,15 +20,15 @@ def test_block_body_preserved_verbatim(fmt: Callable[..., str]) -> None:
     assert fmt(dedent(start)) == dedent(start)
 
 
-def test_block_start_args_sorted_body_kept(fmt: Callable[..., str]) -> None:
-    long_body = "body *keeps* [markdown](y) then " + "more words that push well past column one twenty " * 3
+def test_block_start_args_sorted_body_kept(fmt: Formatter) -> None:
+    long_body = f"body *keeps* [markdown](y) then {'more words that push well past column one twenty ' * 3}"
     assert len(long_body) > 120
-    start = '{% demo(cls="x", author="Bob") %}\n' + long_body + "\n{% end %}\n"
-    expected = '{% demo(author="Bob", cls="x") %}\n' + long_body + "\n{% end %}\n"
+    start = f'{{% demo(cls="x", author="Bob") %}}\n{long_body}\n{{% end %}}\n'
+    expected = f'{{% demo(author="Bob", cls="x") %}}\n{long_body}\n{{% end %}}\n'
     assert fmt(start) == expected
 
 
-def test_block_escaped(fmt: Callable[..., str]) -> None:
+def test_block_escaped(fmt: Formatter) -> None:
     start = """\
         {%/* quote() */%}
         not *rendered*
@@ -37,7 +37,7 @@ def test_block_escaped(fmt: Callable[..., str]) -> None:
     assert fmt(dedent(start)) == dedent(start)
 
 
-def test_block_nested(fmt: Callable[..., str]) -> None:
+def test_block_nested(fmt: Formatter) -> None:
     start = """\
         {% outer() %}
         before
@@ -50,7 +50,7 @@ def test_block_nested(fmt: Callable[..., str]) -> None:
     assert fmt(dedent(start)) == dedent(start)
 
 
-def test_block_empty_body(fmt: Callable[..., str]) -> None:
+def test_block_empty_body(fmt: Formatter) -> None:
     start = """\
         {% note() %}
         {% end %}
@@ -58,7 +58,7 @@ def test_block_empty_body(fmt: Callable[..., str]) -> None:
     assert fmt(dedent(start)) == dedent(start)
 
 
-def test_block_terminates_paragraph(fmt: Callable[..., str]) -> None:
+def test_block_terminates_paragraph(fmt: Formatter) -> None:
     start = """\
         text before
         {% demo(id="x") %}
@@ -75,7 +75,7 @@ def test_block_terminates_paragraph(fmt: Callable[..., str]) -> None:
     assert fmt(dedent(start)) == dedent(expected)
 
 
-def test_block_body_with_foreign_marker_kept(fmt: Callable[..., str]) -> None:
+def test_block_body_with_foreign_marker_kept(fmt: Formatter) -> None:
     start = """\
         {% x() %}
         {%/* end */%}
@@ -84,11 +84,11 @@ def test_block_body_with_foreign_marker_kept(fmt: Callable[..., str]) -> None:
     assert fmt(dedent(start)) == dedent(start)
 
 
-def test_block_too_short_marker_is_text(fmt: Callable[..., str]) -> None:
+def test_block_too_short_marker_is_text(fmt: Formatter) -> None:
     assert fmt("{%}\n") == "{%}\n"
 
 
-def test_block_multiline_start_tag_collapses(fmt: Callable[..., str]) -> None:
+def test_block_multiline_start_tag_collapses(fmt: Formatter) -> None:
     start = """\
         {% demo(
           author="Bob",
@@ -105,7 +105,7 @@ def test_block_multiline_start_tag_collapses(fmt: Callable[..., str]) -> None:
     assert fmt(dedent(start)) == dedent(expected)
 
 
-def test_block_unclosed_start_tag_is_text(fmt: Callable[..., str]) -> None:
+def test_block_unclosed_start_tag_is_text(fmt: Formatter) -> None:
     assert fmt("{% demo(\nnever closed here\n") == "{% demo( never closed here\n"
 
 
@@ -120,11 +120,11 @@ def test_block_unclosed_start_tag_is_text(fmt: Callable[..., str]) -> None:
         ),
     ],
 )
-def test_block_not_recognized(fmt: Callable[..., str], text: str, expected: str) -> None:
+def test_block_not_recognized(fmt: Formatter, text: str, expected: str) -> None:
     assert fmt(text) == expected
 
 
-def test_block_in_list_indented_body(fmt: Callable[..., str]) -> None:
+def test_block_in_list_indented_body(fmt: Formatter) -> None:
     start = """\
         - item
 

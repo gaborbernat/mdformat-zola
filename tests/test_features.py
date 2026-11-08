@@ -1,9 +1,3 @@
-"""Full Zola feature matrix with multiple examples per construct.
-
-Formats through every bundled extension, matching how the `mdformat` CLI runs on a real Zola site, so the Zola-specific
-rules are exercised alongside GFM, footnotes, definition lists, alerts, and TOML frontmatter.
-"""
-
 from __future__ import annotations
 
 from textwrap import dedent
@@ -12,7 +6,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from conftest import Formatter
 
 
 @pytest.mark.parametrize(
@@ -34,7 +28,7 @@ if TYPE_CHECKING:
         pytest.param("{{ f(z=1, a=2, m=3) }}\n", "{{ f(a=2, m=3, z=1) }}\n", id="args_sorted"),
     ],
 )
-def test_inline_value_types(fmt: Callable[..., str], text: str, expected: str) -> None:
+def test_inline_value_types(fmt: Formatter, text: str, expected: str) -> None:
     assert fmt(text, wrap="keep") == expected
 
 
@@ -53,11 +47,11 @@ def test_inline_value_types(fmt: Callable[..., str], text: str, expected: str) -
         ),
     ],
 )
-def test_inline_placement(fmt: Callable[..., str], text: str, expected: str) -> None:
+def test_inline_placement(fmt: Formatter, text: str, expected: str) -> None:
     assert fmt(text) == expected
 
 
-def test_inline_multiline_collapses(fmt: Callable[..., str]) -> None:
+def test_inline_multiline_collapses(fmt: Formatter) -> None:
     start = "a {{ f(\n  b=2,\n  a=1\n) }} b\n"
     assert fmt(start) == "a {{ f(a=1, b=2) }} b\n"
 
@@ -70,7 +64,7 @@ def test_inline_multiline_collapses(fmt: Callable[..., str]) -> None:
         pytest.param("text {{ and }} more\n", id="bare_braces"),
     ],
 )
-def test_invalid_inline_untouched(fmt: Callable[..., str], text: str) -> None:
+def test_invalid_inline_untouched(fmt: Formatter, text: str) -> None:
     assert fmt(text) == text
 
 
@@ -87,7 +81,7 @@ def test_invalid_inline_untouched(fmt: Callable[..., str], text: str) -> None:
         pytest.param("<div>\n  raw *html*\n</div>", id="raw_html"),
     ],
 )
-def test_block_body_verbatim(fmt: Callable[..., str], body: str) -> None:
+def test_block_body_verbatim(fmt: Formatter, body: str) -> None:
     start = f"{{% demo() %}}\n{body}\n{{% end %}}\n"
     assert fmt(start) == start
 
@@ -106,12 +100,12 @@ def test_block_body_verbatim(fmt: Callable[..., str], body: str) -> None:
         pytest.param("{% a() %}\n{% end %}\n", "{% a() %}\n{% end %}\n", id="empty_body"),
     ],
 )
-def test_block_forms(fmt: Callable[..., str], text: str, expected: str) -> None:
+def test_block_forms(fmt: Formatter, text: str, expected: str) -> None:
     assert fmt(text) == expected
 
 
 @pytest.mark.parametrize("level", range(1, 7))
-def test_heading_attrs_all_levels(fmt: Callable[..., str], level: int) -> None:
+def test_heading_attrs_all_levels(fmt: Formatter, level: int) -> None:
     hashes = "#" * level
     assert fmt(f"{hashes} Title {{.b #id .a}}\n") == f"{hashes} Title {{#id .a .b}}\n"
 
@@ -129,7 +123,7 @@ def test_heading_attrs_all_levels(fmt: Callable[..., str], level: int) -> None:
         pytest.param("# T {not attrs}\n", "# T {not attrs}\n", id="invalid_block"),
     ],
 )
-def test_heading_attrs(fmt: Callable[..., str], text: str, expected: str) -> None:
+def test_heading_attrs(fmt: Formatter, text: str, expected: str) -> None:
     assert fmt(text) == expected
 
 
@@ -151,7 +145,7 @@ def test_heading_attrs(fmt: Callable[..., str], text: str, expected: str) -> Non
         pytest.param("rust,custom", "rust,custom", id="unknown_kept"),
     ],
 )
-def test_fence_annotations(fmt: Callable[..., str], info: str, expected_info: str) -> None:
+def test_fence_annotations(fmt: Formatter, info: str, expected_info: str) -> None:
     assert fmt(f"```{info}\nlet x = 1;\n```\n") == f"```{expected_info}\nlet x = 1;\n```\n"
 
 
@@ -164,7 +158,7 @@ def test_fence_annotations(fmt: Callable[..., str], info: str, expected_info: st
         pytest.param("[colocated](image.png)\n", id="colocated_asset"),
     ],
 )
-def test_internal_links_preserved(fmt: Callable[..., str], text: str) -> None:
+def test_internal_links_preserved(fmt: Formatter, text: str) -> None:
     assert fmt(text) == text
 
 
@@ -175,11 +169,11 @@ def test_internal_links_preserved(fmt: Callable[..., str], text: str) -> None:
         pytest.param("Intro.\n\n<!--more-->\n\nBody.\n", id="tight"),
     ],
 )
-def test_summary_delimiter_preserved(fmt: Callable[..., str], text: str) -> None:
+def test_summary_delimiter_preserved(fmt: Formatter, text: str) -> None:
     assert fmt(text) == text
 
 
-def test_toml_frontmatter_preserved(fmt: Callable[..., str]) -> None:
+def test_toml_frontmatter_preserved(fmt: Formatter) -> None:
     start = dedent("""\
         +++
         title = "Post"
@@ -207,7 +201,7 @@ def test_toml_frontmatter_preserved(fmt: Callable[..., str]) -> None:
         pytest.param("> [!NOTE]\n> Heads up.\n", "> [!NOTE]\n> Heads up.\n", id="gfm_alert"),
     ],
 )
-def test_bundled_gfm_features(fmt: Callable[..., str], text: str, expected: str) -> None:
+def test_bundled_gfm_features(fmt: Formatter, text: str, expected: str) -> None:
     assert fmt(text) == expected
 
 
@@ -219,5 +213,5 @@ def test_bundled_gfm_features(fmt: Callable[..., str], text: str, expected: str)
         pytest.param("{% end %}\n", id="stray_end"),
     ],
 )
-def test_non_shortcode_directives_left_literal(fmt: Callable[..., str], text: str) -> None:
+def test_non_shortcode_directives_left_literal(fmt: Formatter, text: str) -> None:
     assert fmt(text) == text

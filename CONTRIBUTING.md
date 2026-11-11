@@ -37,7 +37,7 @@ The project keeps 100% test coverage and passes ruff and ty on every change.
 ## How it works
 
 - `_syntax.py` holds the pure, mdformat-independent formatting: it parses shortcode calls, heading attributes, and
-  code-fence annotations, and emits their canonical form. `tests/test_syntax.py` covers it in isolation.
+  code-fence annotations, and emits their canonical form. `tests/mdformat_zola/test_syntax.py` covers it in isolation.
 - `_mdit_plugins/shortcodes.py` adds the markdown-it-py rules that turn shortcodes into tokens: an inline rule for
   `{{ … }}` and a block rule that captures `{% … %} … {% end %}` bodies.
 - `_renderer.py` renders those tokens, formats prose-shortcode bodies as Markdown while leaving raw ones (Mermaid and

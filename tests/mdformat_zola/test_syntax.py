@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import pytest
 
-from mdformat_zola._syntax import format_attrs, format_fence_info, format_shortcode
+from mdformat_zola._syntax import (  # ruff:ignore[import-private-name]  # parser tests
+    format_attrs,
+    format_fence_info,
+    format_shortcode,
+)
 
 
 @pytest.mark.parametrize(

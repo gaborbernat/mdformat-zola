@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from markdown_it import MarkdownIt
     from mdformat.renderer.typing import Postprocess, Render
 
-from ._mdit_plugins.shortcodes import shortcode_plugin
+from ._mdit_plugins import shortcode_plugin
 from ._renderer import postprocess_heading, render_fence, render_verbatim, render_zola_shortcode_block
 
 #: Formatting rewrites the syntax tree, so mdformat skips its check that the output parses to the same tree.

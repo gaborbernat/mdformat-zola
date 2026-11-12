@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal, NamedTuple
 
-from mdformat_zola._syntax import format_shortcode
+from mdformat_zola._syntax import format_shortcode  # simplint: ignore[private-import-path]  # initialization cycle
 
 if TYPE_CHECKING:
     from markdown_it import MarkdownIt

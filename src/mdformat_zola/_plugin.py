@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 
 from ._mdit_plugins import shortcode_plugin
 from ._renderer import postprocess_heading, render_fence, render_verbatim, render_zola_shortcode_block
+from ._syntax import format_shortcode
 
 #: Formatting rewrites the syntax tree, so mdformat skips its check that the output parses to the same tree.
 CHANGES_AST: Final[bool] = True
@@ -30,7 +31,7 @@ POSTPROCESSORS: Final[Mapping[str, Postprocess]] = {
 
 def update_mdit(mdit: MarkdownIt) -> None:
     """Add Zola-specific markdown-it-py plugins."""
-    mdit.use(shortcode_plugin)
+    mdit.use(shortcode_plugin, format_shortcode)
 
 
 def add_cli_argument_group(group: argparse._ArgumentGroup) -> None:
